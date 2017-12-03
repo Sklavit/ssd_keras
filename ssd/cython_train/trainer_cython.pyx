@@ -26,13 +26,13 @@ class Trainer(object):
                  input_shape=(300, 300, 3),
                  priors_file='prior_boxes_ssd300.pkl',
                  train_file='VOC2007.pkl',
-                 path_prefix='./VOCdevkit/VOC2007/JPEGImages/',
+                 path_prefix='../VOCdevkit/VOC2007/JPEGImages/',
                  model=None,
                  weight_file='weights_SSD300.hdf5',
                  freeze=('input_1', 'conv1_1', 'conv1_2', 'pool1',
                          'conv2_1', 'conv2_2', 'pool2',
                          'conv3_1', 'conv3_2', 'conv3_3', 'pool3'),
-                 save_weight_file='/src/resource/checkpoints/weights.{epoch:02d}-{val_loss:.2f}.hdf5',  # noqa
+                 save_weight_file='../resource/checkpoints/weights.{epoch:02d}-{val_loss:.2f}.hdf5',  # noqa
                  optim=None,
                  batch_size=20,
                  nb_worker=1
@@ -87,7 +87,7 @@ class Trainer(object):
                                      save_weights_only=True),
                      self.__make_tensorboard()]
         history = self.model.fit_generator(generator=self.gen.generate(True),
-                                           steps_per_epoch=self.gen.train_batches // self.batch_size,
+                                           self.gen.train_batches // self.batch_size,
                                            epochs=nb_epoch,
                                            verbose=1,
                                            callbacks=callbacks,
@@ -103,8 +103,9 @@ class Trainer(object):
         """
         tictoc = strftime("%a_%d_%b_%Y_%H_%M_%S", gmtime())
         directory_name = tictoc
-        self.log_dir = "./log/" + directory_name
+        self.log_dir = "../log/" + directory_name
         os.mkdir(self.log_dir)
         tensorboard = TensorBoard(log_dir=self.log_dir, histogram_freq=1,
-                                  write_graph=True, )
+                                  write_graph=True, write_grads=True,
+                                  write_images=True)
         return tensorboard

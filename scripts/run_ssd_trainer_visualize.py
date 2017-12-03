@@ -1,7 +1,7 @@
 import pyximport
 
 pyximport.install()
-from cython_train.trainer_cython import Trainer
+from ssd.cython_train import Trainer
 from ssd_v2 import SSD300v2
 import keras
 import argparse

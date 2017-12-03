@@ -2,16 +2,16 @@
 
 # In[1]:
 
+import matplotlib.pyplot as plt
+import numpy as np
+import tensorflow as tf
 from keras.applications.imagenet_utils import preprocess_input
 from keras.backend.tensorflow_backend import set_session
 from keras.preprocessing import image
-import matplotlib.pyplot as plt
-import numpy as np
 from scipy.misc import imread
-import tensorflow as tf
 
-from ssd_v2 import SSD300v2
 from ssd_utils import BBoxUtility
+from ssd_v2 import SSD300v2
 
 np.set_printoptions(suppress=True)
 
@@ -19,65 +19,47 @@ config = tf.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.45
 set_session(tf.Session(config=config))
 
-
 # In[2]:
 
 voc_classes = ['Aeroplane', 'Bicycle', 'Bird', 'Boat', 'Bottle',
                'Bus', 'Car', 'Cat', 'Chair', 'Cow', 'Diningtable',
-               'Dog', 'Horse','Motorbike', 'Person', 'Pottedplant',
+               'Dog', 'Horse', 'Motorbike', 'Person', 'Pottedplant',
                'Sheep', 'Sofa', 'Train', 'Tvmonitor']
 NUM_CLASSES = len(voc_classes) + 1
-
 
 # In[3]:
 
 input_shape = (300, 300, 3)
 model = SSD300v2(input_shape, num_classes=NUM_CLASSES)
-model.load_weights('weights_SSD300.hdf5', by_name=True)
+model.load_weights('../data/weights_SSD300.hdf5', by_name=True)
 bbox_util = BBoxUtility(NUM_CLASSES)
-
 
 # In[4]:
 
 inputs = []
 images = []
-img_path = './pics/fish-bike.jpg'
-img = image.load_img(img_path, target_size=(300, 300))
-img = image.img_to_array(img)
-images.append(imread(img_path))
-inputs.append(img.copy())
-img_path = './pics/cat.jpg'
-img = image.load_img(img_path, target_size=(300, 300))
-img = image.img_to_array(img)
-images.append(imread(img_path))
-inputs.append(img.copy())
-img_path = './pics/boys.jpg'
-img = image.load_img(img_path, target_size=(300, 300))
-img = image.img_to_array(img)
-images.append(imread(img_path))
-inputs.append(img.copy())
-img_path = './pics/car_cat.jpg'
-img = image.load_img(img_path, target_size=(300, 300))
-img = image.img_to_array(img)
-images.append(imread(img_path))
-inputs.append(img.copy())
-img_path = './pics/car_cat2.jpg'
-img = image.load_img(img_path, target_size=(300, 300))
-img = image.img_to_array(img)
-images.append(imread(img_path))
-inputs.append(img.copy())
-inputs = preprocess_input(np.array(inputs))
 
+images_paths = ['../pics/fish-bike.jpg',
+                '../pics/cat.jpg',
+                '../pics/boys.jpg',
+                '../pics/car_cat.jpg',
+                '../pics/car_cat2.jpg']
+
+for img_path in images_paths:
+    img = image.load_img(img_path, target_size=(300, 300))
+    img = image.img_to_array(img)
+    images.append(imread(img_path))
+    inputs.append(img.copy())
+
+inputs = preprocess_input(np.array(inputs))
 
 # In[5]:
 
 preds = model.predict(inputs, batch_size=1, verbose=1)
 
-
 # In[6]:
 
 results = bbox_util.detection_out(preds)
-
 
 # In[8]:
 
@@ -91,7 +73,7 @@ for i, img in enumerate(images):
     det_ymax = results[i][:, 5]
 
     # Get detections with confidence higher than 0.6.
-    top_indices = [i for i, conf in enumerate(det_conf) if conf >= 0.6]
+    top_indices = [i for i, conf in enumerate(det_conf) if conf >= 0.06]
 
     top_conf = det_conf[top_indices]
     top_label_indices = det_label[top_indices].tolist()
@@ -113,8 +95,8 @@ for i, img in enumerate(images):
         label = int(top_label_indices[i])
         label_name = voc_classes[label - 1]
         display_txt = '{:0.2f}, {}'.format(score, label_name)
-        coords = (xmin, ymin), xmax-xmin+1, ymax-ymin+1
+        coords = (xmin, ymin), xmax - xmin + 1, ymax - ymin + 1
         color = colors[label]
         currentAxis.add_patch(plt.Rectangle(*coords, fill=False, edgecolor=color, linewidth=2))
-        currentAxis.text(xmin, ymin, display_txt, bbox={'facecolor':color, 'alpha':0.5})
+        currentAxis.text(xmin, ymin, display_txt, bbox={'facecolor': color, 'alpha': 0.5})
     plt.show()

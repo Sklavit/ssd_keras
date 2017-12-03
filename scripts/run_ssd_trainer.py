@@ -1,7 +1,7 @@
 import pyximport
 
 pyximport.install()
-from cython_train.trainer_cython import Trainer
+from ssd.cython_train.trainer_cython import Trainer
 from ssd_v2 import SSD300v2
 import keras
 import argparse
@@ -23,20 +23,20 @@ def main():
                         type=int, default=21,
                         dest="class_number", help="set the classify number ")
     parser.add_argument("-b", "--prior_boxes_ssd300", metavar="prior_boxes_ssd300",
-                        type=str, default='prior_boxes_ssd300.pkl',
+                        type=str, default='../data/prior_boxes_ssd300.pkl',
                         dest="prior_boxes_ssd300", help="set the prior boxes file")
     parser.add_argument("-t", "--train_file", metavar="train_file",
-                        type=str, default='VOC2007.pkl',
+                        type=str, default='../data/VOC2007.pkl',
                         dest="train_file", help="set the train file")
     parser.add_argument("-p", "--path_prefix", metavar="path_prefix",
-                        type=str, default='./VOCdevkit/VOC2007/JPEGImages/',
+                        type=str, default='../VOCdevkit/VOC2007/JPEGImages/',
                         dest="path_prefix", help="set the path prefix")
     parser.add_argument("-w", "--weight_file", metavar="weight_file",
-                        type=str, default='weights_SSD300.hdf5',
+                        type=str, default='../data/weights_SSD300.hdf5',
                         dest="weight_file", help="set the weight file")
     parser.add_argument("-s", "--save_weight_file", metavar="save_weight_file",
                         type=str,
-                        default='./resource/checkpoints/weights.{epoch:02d}-{val_loss:.2f}.hdf5',
+                        default='../resource/checkpoints/weights.{epoch:02d}-{val_loss:.2f}.hdf5',
                         dest="save_weight_file", help="set the save weight file")
     parser.add_argument("-n", "--nb_epoch", metavar="nb_epoch",
                         type=int,
@@ -60,7 +60,7 @@ def main():
                       optim=keras.optimizers.Adam(lr=base_lr),
                       )
     trainer.train(nb_epoch=args.nb_epoch)
-
+from keras.callbacks import TensorBoard
 
 if __name__ == "__main__":
     main()
