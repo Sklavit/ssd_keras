@@ -1,15 +1,9 @@
 """ A class for testing a SSD model on a video file or webcam """
 
 import cv2
-import keras
 from keras.applications.imagenet_utils import preprocess_input
-from keras.backend.tensorflow_backend import set_session
-from keras.models import Model
-from keras.preprocessing import image 
-import pickle
+from keras.preprocessing import image
 import numpy as np
-from random import shuffle
-from scipy.misc import imread, imresize
 from timeit import default_timer as timer
 
 import sys

@@ -100,5 +100,9 @@ ENV/
 
 # Data
 pics/
-SSD/
 VOC2007/
+ssd-checkpoints/
+log/
+VOCdevkit/
+data/VOC2007.pkl
+default_weights/
