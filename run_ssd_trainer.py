@@ -6,6 +6,16 @@ from ssd_v2 import SSD300v2
 import keras
 import argparse
 
+LIMIT_CPU_PARALLELISM = True
+
+if LIMIT_CPU_PARALLELISM:
+    from keras.backend.tensorflow_backend import set_session
+    import tensorflow as tf
+
+    config = tf.ConfigProto(intra_op_parallelism_threads=1, inter_op_parallelism_threads=1,
+                            allow_soft_placement=True, device_count={'CPU': 1})
+    set_session(tf.Session(config=config))
+
 
 def main():
     parser = argparse.ArgumentParser(description="Training ssd model with keras")
