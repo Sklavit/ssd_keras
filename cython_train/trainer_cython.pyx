@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
 import pickle
 
 import pyximport
@@ -22,6 +20,7 @@ class Trainer(object):
     """
     Trainer for ssd_model
     """
+
     def __init__(self,
                  class_number=21,
                  input_shape=(300, 300, 3),
@@ -37,9 +36,9 @@ class Trainer(object):
                  optim=None,
                  batch_size=20,
                  nb_worker=1
-                ):
-        """
-        Setting below parameter 
+                 ):
+        """Setting below parameter
+
         :param class_number(int): class number
         :param input_shape(set): set input shape  
         :param priors_file(str): set prior file name 
@@ -77,24 +76,25 @@ class Trainer(object):
                                              neg_pos_ratio=2.0).compute_loss)
 
     def train(self, nb_epoch):
-        """
-        Call Train
-        :param nb_epoch(int): setting number of epoch 
+        """Run training
+
+        :param int nb_epoch: setting number of epoch
         """
         for L in self.model.layers:
             if L.name in self.freeze:
                 L.trainable = False
         callbacks = [ModelCheckpoint(self.save_weight_file, verbose=1,
-                                     save_weights_only=True)]
-        callbacks.append(self.__make_tensorboard())
-        history = self.model.fit_generator(self.gen.generate(True),
-                                           self.gen.train_batches // self.batch_size,
-                                           nb_epoch, verbose=1,
+                                     save_weights_only=True),
+                     self.__make_tensorboard()]
+        history = self.model.fit_generator(generator=self.gen.generate(True),
+                                           steps_per_epoch=self.gen.train_batches // self.batch_size,
+                                           epochs=nb_epoch,
+                                           verbose=1,
                                            callbacks=callbacks,
-                                           validation_data=self.gen.generate(
-                                               False),
-                                           nb_val_samples=self.gen.val_batches,
-                                           nb_worker=self.nb_worker)
+                                           validation_data=self.gen.generate(False),
+                                           validation_steps=self.gen.val_batches,
+                                           workers=self.nb_worker,
+                                           use_multiprocessing=False)
 
     def __make_tensorboard(self):
         """
@@ -108,4 +108,3 @@ class Trainer(object):
         tensorboard = TensorBoard(log_dir=self.log_dir, histogram_freq=1,
                                   write_graph=True, )
         return tensorboard
-

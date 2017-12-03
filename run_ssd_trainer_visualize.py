@@ -1,10 +1,7 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
 import pyximport
+
 pyximport.install()
 from cython_train.trainer_cython import Trainer
-# from trainer import Trainer
 from ssd_v2 import SSD300v2
 import keras
 import argparse
@@ -27,7 +24,7 @@ def main():
                         type=str, default='./tests/test_data/JPEGImages/',
                         dest="path_prefix", help="set the path prefix")
     parser.add_argument("-w", "--weight_file", metavar="weight_file",
-                        type=str, default='weights_SSD300.hdf5',
+                        type=str, default='try_weights_SSD300.hdf5',
                         dest="weight_file", help="set the weight file")
     parser.add_argument("-s", "--save_weight_file", metavar="save_weight_file",
                         type=str,
@@ -40,7 +37,7 @@ def main():
     args = parser.parse_args()
     input_shape = (300, 300, 3)
     model = SSD300v2(input_shape, num_classes=args.class_number)
-    base_lr=3e-4
+    base_lr = 3e-4
     trainer = Trainer(class_number=args.class_number,
                       input_shape=input_shape,
                       priors_file=args.prior_boxes_ssd300,

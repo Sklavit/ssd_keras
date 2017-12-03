@@ -18,7 +18,7 @@ conda create -n py36cpu python=3.6
 
 Install packages:
 ```commandline
-conda install numpy scipy
+conda install numpy scipy matplotlib
 conda install keras opencv imageio -c conda-forge
 ```
 

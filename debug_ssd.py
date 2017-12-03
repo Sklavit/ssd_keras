@@ -1,17 +1,17 @@
-from keras.applications.imagenet_utils import preprocess_input
-from keras.backend.tensorflow_backend import set_session
-from keras.preprocessing import image
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import numpy as np
-from scipy.misc import imread
-import tensorflow as tf
-from keras import backend as K
 import math
 import time
 
-from ssd_v2 import SSD300v2
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+import tensorflow as tf
+from keras import backend as K
+from keras.applications.imagenet_utils import preprocess_input
+from keras.preprocessing import image
+from scipy.misc import imread
+
 from ssd_utils import BBoxUtility
+from ssd_v2 import SSD300v2
 
 config = tf.ConfigProto(
     device_count={'GPU': 0}
@@ -23,12 +23,12 @@ np.set_printoptions(suppress=True)
 
 voc_classes = ['Aeroplane', 'Bicycle', 'Bird', 'Boat', 'Bottle',
                'Bus', 'Car', 'Cat', 'Chair', 'Cow', 'Diningtable',
-               'Dog', 'Horse','Motorbike', 'Person', 'Pottedplant',
+               'Dog', 'Horse', 'Motorbike', 'Person', 'Pottedplant',
                'Sheep', 'Sofa', 'Train', 'Tvmonitor']
 NUM_CLASSES = len(voc_classes) + 1
 
 network_size = 300
-input_shape=(network_size, network_size, 3)
+input_shape = (network_size, network_size, 3)
 model = SSD300v2(input_shape, num_classes=NUM_CLASSES)
 model.load_weights('weights_SSD300.hdf5', by_name=True)
 bbox_util = BBoxUtility(NUM_CLASSES)
@@ -43,14 +43,16 @@ def get_image_from_path(img_path):
     images.append(imread(img_path))
     inputs.append(img.copy())
 
-for idx in range(1292, 1293):
-    get_image_from_path('./GTAV/GD' + str(idx) + '.png')
+
+# for idx in range(1292, 1293):
+#     get_image_from_path('./GTAV/GD' + str(idx) + '.png')
+get_image_from_path('pics/car_cat2.jpg')
 
 inputs = preprocess_input(np.array(inputs))
 t1 = time.time()
 preds = model.predict(inputs, batch_size=1, verbose=1)
 t2 = time.time()
-print('elapse time {:f}   fsp {:f}'.format(t2-t1, 1/(t2-t1)))
+print('elapse time {:f}   fsp {:f}'.format(t2 - t1, 1 / (t2 - t1)))
 results = bbox_util.detection_out(preds)
 
 a = model.predict(inputs, batch_size=1)
@@ -60,7 +62,6 @@ norm = mpl.colors.Normalize(vmin=0., vmax=5.)
 
 
 def plot_activations(activations, plot_enable=True):
-
     num_channel = activations.shape[2]
     act_border = activations.shape[0]
     map_border_num = int(math.ceil(math.sqrt(num_channel)))
@@ -76,7 +77,7 @@ def plot_activations(activations, plot_enable=True):
             if idx >= num_channel:
                 break
             act = activations[:, :, idx]
-            act_map[i_x*act_border:(i_x+1)*act_border, i_y*act_border:(i_y+1)*act_border] = act
+            act_map[i_x * act_border:(i_x + 1) * act_border, i_y * act_border:(i_y + 1) * act_border] = act
             act_sum = sum(sum(act))
             all_sum += act_sum
             # print('filter-{:d}  act_sum={:f}'.format(idx, act_sum))
@@ -130,12 +131,11 @@ for i, img in enumerate(images):
         label = int(top_label_indices[i])
         label_name = voc_classes[label - 1]
         display_txt = '{:0.2f}, {}'.format(score, label_name)
-        coords = (xmin, ymin), xmax-xmin+1, ymax-ymin+1
+        coords = (xmin, ymin), xmax - xmin + 1, ymax - ymin + 1
         color = colors[label]
         currentAxis.add_patch(plt.Rectangle(*coords, fill=False, edgecolor=color, linewidth=2))
-        currentAxis.text(xmin, ymin, display_txt, bbox={'facecolor':color, 'alpha':0.5})
+        currentAxis.text(xmin, ymin, display_txt, bbox={'facecolor': color, 'alpha': 0.5})
 
     fig_img.show()
 
 plt.show()
-
