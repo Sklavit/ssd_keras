@@ -57,13 +57,13 @@ class XML_preprocessor(object):
 ## example on how to use it
 import pickle
 parser = argparse.ArgumentParser(description="Training voxnex with keras")
-parser.add_argument("train_or_test",
+parser.add_argument("-t", "--train_or_test", default="train",
                     type=str,
                     help="set train or test")
-parser.add_argument("xml_data_path", default="VOCdevkit/VOC2007/Annotations/",
+parser.add_argument("-d", "--xml_data_path", default="../VOCdevkit/VOC2007/Annotations/",
                     type=str,
                     help="set xml_data_path")
-parser.add_argument("out_pkl_file", default="VOC2007.pkl",
+parser.add_argument("-o", "--out_pkl_file", default="VOC2007.pkl",
                     type=str,
                     help="set output pkl file name")
 parser.add_argument("-c", "--classes", metavar="classes",
@@ -72,8 +72,7 @@ parser.add_argument("-c", "--classes", metavar="classes",
                     dest="classes", help="set the number of classes")
 parser.add_argument("-C", "--conf_file", metavar="conf_file",
                     type=str,
-                    default='conf/class_id.yml',
-                    dest="conf file setting", help="set the config file")
+                    default='../conf/class_id.yml', help="set the config file")
 args = parser.parse_args()
 if args.train_or_test == 'train':
     data = XML_preprocessor(args.xml_data_path,

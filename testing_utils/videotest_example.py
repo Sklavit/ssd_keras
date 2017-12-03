@@ -1,12 +1,13 @@
 import keras
 import pickle
-from videotest import VideoTest
+from testing_utils.videotest import VideoTest
 
 import sys
 sys.path.append("..")
-from ssd import SSD300 as SSD
+# from ssd import SSD300 as SSD
+from ssd_v2 import SSD300v2 as SSD
 
-input_shape = (300,300,3)
+input_shape = (300, 300, 3)
 
 # Change this if you run with other classes than VOC
 class_names = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"];

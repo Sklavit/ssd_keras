@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from random import shuffle
-from scipy.misc import imread
+from imageio import imread
 from scipy.misc import imresize
 from keras.applications.imagenet_utils import preprocess_input
 import cv2
-from PIL import Image
 
 
 class Generator(object):
@@ -155,13 +154,15 @@ class Generator(object):
                     img_path = self.path_prefix + key
                 else:
                     img_path = self.path_prefix + key + '.png'
-                img = imread(img_path, mode='L').astype('float32')
+                # img = imread(img_path, mode='L').astype('float32')
+                img = imread(img_path).astype('float32')
                 y = self.gt[key].copy()
-                try:
-                    img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-                except:
-                    print('failed gray to rgb image %s' % (img_path,))
-                    continue
+                # NOTE: PASCAL VOC2007 is RGB, no need in the following conversion code
+                # try:
+                #     img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+                # except:
+                #     print('failed gray to rgb image %s' % (img_path,))
+                #     continue
                 y = self.gt[key].copy()
                 if train and self.do_crop:
                     img, y = self.random_sized_crop(img, y)

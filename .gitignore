@@ -99,4 +99,6 @@ ENV/
 *.h5
 
 # Data
-pics/*.png
+pics/
+SSD/
+VOC2007/
