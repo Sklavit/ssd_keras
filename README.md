@@ -52,8 +52,9 @@ You need to download The PASCAL Visual Object Classes Challenge 2007 training da
 (450MB tar file)
 You should unzip it into project root as `VOCdevkit` directory.
 Then you should run `PASCAL_VOC/get_data_from_XML.py` to create `VOC2007.pkl` with annotations.
-Then you could run training Keras 2. implementation of SSD by `run_ssd_trainer.py`.
+Then you could run training Keras 2. implementation of SSD by `scripts/run_ssd_trainer.py`.
 NOTE: you will need `cython` installed for this.
 
+To see prediction results run `scripts/run_ssd.py`.
 
  
