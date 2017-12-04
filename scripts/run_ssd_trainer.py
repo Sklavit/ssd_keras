@@ -60,7 +60,7 @@ def main():
                       optim=keras.optimizers.Adam(lr=base_lr),
                       )
     trainer.train(nb_epoch=args.nb_epoch)
-from keras.callbacks import TensorBoard
+
 
 if __name__ == "__main__":
     main()

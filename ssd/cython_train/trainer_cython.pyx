@@ -87,7 +87,7 @@ class Trainer(object):
                                      save_weights_only=True),
                      self.__make_tensorboard()]
         history = self.model.fit_generator(generator=self.gen.generate(True),
-                                           self.gen.train_batches // self.batch_size,
+                                           steps_per_epoch=self.gen.train_batches // self.batch_size,
                                            epochs=nb_epoch,
                                            verbose=1,
                                            callbacks=callbacks,

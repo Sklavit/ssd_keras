@@ -12,7 +12,6 @@ from keras.layers import Reshape
 from keras.layers import ZeroPadding2D
 from keras.layers import concatenate
 from keras.models import Model
-from keras.utils import plot_model
 
 from ssd_layers import Normalize
 from ssd_layers import PriorBox
@@ -366,8 +365,6 @@ def SSD300v2(input_shape, num_classes=21, featurte_map=None):
 
     # summarize layers
     print(model.summary())
-    # plot graph
-    plot_model(model, to_file='SSD300_model.png')
 
     return model
 
